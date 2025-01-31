@@ -127,7 +127,7 @@ def song_downloader():
                             'format': 'bestaudio/best',
                             'quite':True,
                             'audio-format': 'mp3',
-                            'outtmpl': 'Downloads/[AD_CODEs]%(title)s.%(ext)s',  
+                            'outtmpl': 'Downloads/[AD_CODEs]%(title)s.mp3',  
                         }
         with YoutubeDL(audiodownloader) as downloader:
             downloader.download([search_query])
