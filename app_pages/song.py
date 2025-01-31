@@ -128,18 +128,18 @@ def song_downloader():
                             'format': 'bestaudio/best',
                             'quite':True,
                             'audio-format': 'mp3',
-                            'outtmpl': '[AD_CODEs]%(title)s.mp3',  
+                            'outtmpl': '%(title)s.mp3',  
                         }
         with YoutubeDL(audiodownloader) as downloader:
             downloader.download([search_query])
         
-        file_path = "[AD_CODEs]%(title)s.mp3"
+        file_name = f"{name}.mp3"
 
-        if os.path.exists(file_path):
-            with open(file_path,"rb") as file:
+        if os.path.exists(file_name):
+            with open(file_name,"rb") as file:
                 st.download_button(label="Download Song",
                     data=file,
-                    file_name=file_path,
+                    file_name=file_name,
                     mime="audio/mp3") 
     else:
         st.warning("Invalid Name!!")
