@@ -2,21 +2,11 @@ import streamlit as st
 from yt_dlp import YoutubeDL
 import os
 
-
-
-
-
-
 st.markdown("""<style>
             [data-testid="stAppViewContainer"]{
             background-image: radial-gradient(circle, #6be81f, #00ea7e, #00e6bb, #00dee4, #00d3f3, #00d4f0, #00d6ee, #00d7eb, #00e5d3, #5beead, #a1f280, #e6f058);
             }
             </style>""",unsafe_allow_html=True)
-
-
-
-
-
 
 header = "🎶SONG-DOWNLOADER"
 span_element = ""
@@ -41,10 +31,7 @@ st.markdown(f"""
                 opacity: 1;
             }}
         }}
-        
-
-        
-        .title {{
+     .title {{
             text-align: center;
             font-size: 50px;
             font-weight: bold;
@@ -125,31 +112,50 @@ def song_downloader():
     if name:
         search_query = f"ytsearch:{name}"
         audiodownloader = {
-                            'format': 'bestaudio/best',
-                            'quite':True,
-                            'audio-format': 'mp3',
-                            'outtmpl': '%(title)s.mp3',  
-                        }
+            'format': 'bestaudio/best',
+            'quiet': True,
+            'audio-format': 'mp3',
+            'outtmpl': f'{name}.mp3',  # Use title and extension dynamically
+        }
         with YoutubeDL(audiodownloader) as downloader:
-            downloader.download([search_query])
+            info = downloader.extract_info(search_query,download=True)
+            if info:
+                song_name = info.get('title')
+                artist = info.get('uploader')
         
+        # Find the file that yt-dlp downloaded
         file_name = f"{name}.mp3"
-
         if os.path.exists(file_name):
-            with open(file_name,"rb") as file:
-                st.download_button(label="Download Song",
-                    data=file,
-                    file_name=file_name,
-                    mime="audio/mp3") 
+            st.markdown(f"<p style='text-align: center;'>{song_name} Song Found .Press the button below to Download👇.</p>",unsafe_allow_html=True)
+            with open(file_name, "rb") as file:
+                st.markdown("""
+                            <style>
+                            .stDownloadButton { 
+                                display: flex; 
+                                justify-content: center; 
+                            }
+                            </style>
+                            """, unsafe_allow_html=True)
+                if st.download_button(label=f"⬇️Download {song_name}",
+                                data=file,
+                                file_name=file_name,
+                                mime="audio/mp3"):
+                    return 1
+                
+                
+        else:
+            st.warning("Download failed!")
+
     else:
         st.warning("Invalid Name!!")
 
-
-if st.button("Download"):
+# Button to start downloading
+if st.button("Search"):
     if name:
-        with st.spinner('Downloading the song...'):
-            song_downloader()
-        st.success("Download Successful!")
+        with st.spinner('Searching the song...'):
+            a = song_downloader()
+        if a == 1:
+            st.success("Download Successful!")
     else:
         st.error("🚨Please enter a song name.")
 
