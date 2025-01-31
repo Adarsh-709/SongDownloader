@@ -1,5 +1,6 @@
 import streamlit as st
 from yt_dlp import YoutubeDL
+import os
 
 
 
@@ -127,12 +128,22 @@ def song_downloader():
                             'format': 'bestaudio/best',
                             'quite':True,
                             'audio-format': 'mp3',
-                            'outtmpl': 'Downloads/[AD_CODEs]%(title)s.mp3',  
+                            'outtmpl': '[AD_CODEs]%(title)s.mp3',  
                         }
         with YoutubeDL(audiodownloader) as downloader:
             downloader.download([search_query])
+        
+        file_path = "[AD_CODEs]%(title)s.mp3"
+
+        if os.path.exists(file_path):
+            with open(file_path,"rb") as file:
+                st.download_button(label="Download Song",
+                    data=file,
+                    file_name=file_path,
+                    mime="audio/mp3") 
     else:
         st.warning("Invalid Name!!")
+
 
 if st.button("Download"):
     if name:
